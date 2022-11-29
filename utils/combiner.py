@@ -24,6 +24,7 @@ def combine_and_alpha_blend() -> None:
     args_8: tuple   = ("--width", "-w")
     args_9: tuple   = ("--height", "-h")
     args_10: tuple  = ("--downscale", "-ds")
+    args_11: tuple  = ("--vertical", "-v")
 
     do_combine_vid: bool = False
     do_combine_img: bool = False
@@ -35,7 +36,7 @@ def combine_and_alpha_blend() -> None:
     save: bool = False
 
     if args_1_0[0] in sys.argv: filename_1 = sys.argv[sys.argv.index(args_1_0[0]) + 1]
-    if args_1_0[0] in sys.argv: filename_1 = sys.argv[sys.argv.index(args_1_0[0]) + 1]
+    if args_1_0[1] in sys.argv: filename_1 = sys.argv[sys.argv.index(args_1_0[1]) + 1]
 
     if args_1_1[0] in sys.argv: filename_2 = sys.argv[sys.argv.index(args_1_1[0]) + 1]
     if args_1_1[1] in sys.argv: filename_2 = sys.argv[sys.argv.index(args_1_1[1]) + 1]
@@ -70,6 +71,8 @@ def combine_and_alpha_blend() -> None:
     if args_10[0] in sys.argv: factor = float(sys.argv[sys.argv.index(args_10[0]) + 1])
     if args_10[1] in sys.argv: factor = float(sys.argv[sys.argv.index(args_10[1]) + 1])
 
+    if args_11[0] in sys.argv or args_11[1] in sys.argv: vertical = True
+
     if save:
         if do_combine_vid or do_combine_img:
             out = cv2.VideoWriter(
@@ -100,12 +103,15 @@ def combine_and_alpha_blend() -> None:
                     frame_1 = cv2.resize(src=frame_1, dsize=(int(width / factor), int(height / factor)), interpolation=cv2.INTER_CUBIC)
                     frame_2 = cv2.resize(src=frame_2, dsize=(int(width / factor), int(height / factor)), interpolation=cv2.INTER_CUBIC)
 
-                frame = np.hstack((frame_1, frame_2))
+                if vertical:
+                    frame = np.vstack((frame_1, frame_2))
+                else:
+                    frame = np.hstack((frame_1, frame_2))
 
                 if save:
                     out.write(frame)
                 else:
-                    cv2.imshow("H Stacked", frame)
+                    cv2.imshow("Stacked", frame)
                 
                 if cv2.waitKey(1) & 0xFF == ord("q"): 
                     break
@@ -134,12 +140,15 @@ def combine_and_alpha_blend() -> None:
                 frame_1 = cv2.resize(src=frame_1, dsize=(width, height), interpolation=cv2.INTER_CUBIC)
                 if factor: frame_1 = cv2.resize(src=frame_1, dsize=(int(width / factor), int(height / factor)), interpolation=cv2.INTER_CUBIC)
 
-                frame = np.hstack((frame_1, image))
+                if vertical:
+                    frame = np.vstack((frame_1, image))
+                else:
+                    frame = np.hstack((frame_1, image))
 
                 if save:
                     out.write(frame)
                 else:
-                    cv2.imshow("H Stacked", frame)
+                    cv2.imshow("Stacked", frame)
 
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
