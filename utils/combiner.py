@@ -34,6 +34,7 @@ def combine_and_alpha_blend() -> None:
     filename_1: str = "Video_1.mp4"
     filename_2: str = "Video_2.mp4"
     save: bool = False
+    vertical: bool = False
 
     if args_1_0[0] in sys.argv: filename_1 = sys.argv[sys.argv.index(args_1_0[0]) + 1]
     if args_1_0[1] in sys.argv: filename_1 = sys.argv[sys.argv.index(args_1_0[1]) + 1]
@@ -41,8 +42,8 @@ def combine_and_alpha_blend() -> None:
     if args_1_1[0] in sys.argv: filename_2 = sys.argv[sys.argv.index(args_1_1[0]) + 1]
     if args_1_1[1] in sys.argv: filename_2 = sys.argv[sys.argv.index(args_1_1[1]) + 1]
 
-    assert filename_1 in os.listdir(INPUT_PATH), "File 1 not found in input directory"
-    assert filename_2 in os.listdir(INPUT_PATH), "File 2 not found in input directory"
+    assert filename_1 in os.listdir(INPUT_PATH), f"File 1 ({filename_1}) not found in input directory"
+    assert filename_2 in os.listdir(INPUT_PATH), f"File 2 ({filename_2}) not found in input directory"
 
     if args_2[0] in sys.argv: alpha = float(sys.argv[sys.argv.index(args_2[0]) + 1])
     if args_2[1] in sys.argv: alpha = float(sys.argv[sys.argv.index(args_2[1]) + 1])
@@ -75,12 +76,20 @@ def combine_and_alpha_blend() -> None:
 
     if save:
         if do_combine_vid or do_combine_img:
-            out = cv2.VideoWriter(
-                os.path.join(OUTPUT_PATH, "Stack Combined.mp4"), 
-                cv2.VideoWriter_fourcc(*"mp4v"), 
-                30, 
-                (2*width, height)
-            )
+            if vertical:
+                out = cv2.VideoWriter(
+                    os.path.join(OUTPUT_PATH, "V-Stack Combined.mp4"), 
+                    cv2.VideoWriter_fourcc(*"mp4v"), 
+                    30, 
+                    (width, 2*height)
+                )
+            else:
+                out = cv2.VideoWriter(
+                    os.path.join(OUTPUT_PATH, "H-Stack Combined.mp4"), 
+                    cv2.VideoWriter_fourcc(*"mp4v"), 
+                    30, 
+                    (2*width, height)
+                )
         else:
             out = cv2.VideoWriter(
                 os.path.join(OUTPUT_PATH, "Alpha Combined.mp4"), 

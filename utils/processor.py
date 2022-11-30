@@ -230,7 +230,7 @@ def process() -> None:
 
     if args_18[0] in sys.argv or args_18[1] in sys.argv: save = True
 
-    assert filename in os.listdir(INPUT_PATH), "File not found in input directory"
+    assert filename in os.listdir(INPUT_PATH), f"{filename} not found in input directory"
 
     cap = cv2.VideoCapture(os.path.join(INPUT_PATH, filename))
     orig_width: int  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
